@@ -1,0 +1,270 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Proveedor Express</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Layout: tienda de una columna en móvil; catálogo en rejilla; ficha de proveedor como pieza central del hero */
+:root{
+  --bg:#0e0914; --surface:#181022; --fg:#f6f0f7; --muted:#b0a3bd; --line:#3a2c4a;
+  --accent:#f0b95b; --accent2:#ff9ab8; --accent-fg:#1a1020; --tag:#241833; --warn:#f0b95b;
+  color-scheme:dark;
+  --display:"Playfair Display",Georgia,"Times New Roman",serif;
+  --body:"Jost",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(60% 320px at 90% 0,rgba(139,92,246,.28),transparent) no-repeat,radial-gradient(50% 260px at 0 8%,rgba(255,154,184,.16),transparent) no-repeat,var(--bg);color:var(--fg);font:16px/1.55 var(--body);
+  padding-block:0 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);line-height:1.08;margin:0;text-wrap:balance}
+h1{font-size:clamp(2.2rem,8.5vw,3.6rem);font-weight:700;letter-spacing:0}
+h2{font-size:clamp(1.7rem,6vw,2.4rem);font-weight:700;letter-spacing:0}
+h3{font-size:1.25rem;font-weight:700}
+p{margin:0}
+a{color:var(--accent2)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.top{display:flex;flex-direction:column;align-items:center;gap:12px;padding-block:28px 22px;border-bottom:1px solid var(--line);text-align:center}
+.brand{font-family:var(--display);font-weight:700;font-size:clamp(1.7rem,7.5vw,2.6rem);line-height:1;letter-spacing:.08em;text-transform:uppercase}
+.brand span{color:var(--accent)}
+.nav{display:flex;gap:22px;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase}
+.nav a{color:var(--muted);text-decoration:none}
+.hero{display:grid;gap:28px;padding-block:20px 44px;grid-template-columns:1fr}
+.hero p.lead{color:var(--muted);font-size:1.1rem;max-width:34em;margin-top:14px}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{font:500 .82rem var(--body);letter-spacing:.1em;text-transform:uppercase;border:0;border-radius:999px;padding:13px 20px;cursor:pointer;text-decoration:none;display:inline-block;text-align:center;min-height:46px}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:var(--accent-fg)}
+.hl{font-style:italic;background:linear-gradient(90deg,var(--accent2),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn.ghost{background:transparent;color:var(--accent2);border:1px solid var(--accent)}
+.ficha{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;outline:1px solid var(--line);outline-offset:6px;padding:18px;min-width:0}
+.ficha .eyebrow{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.ficha dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:10px 16px}
+.ficha dt{color:var(--muted);font-size:.85rem}
+.ficha dd{margin:0;font-weight:500;border-bottom:1px solid var(--line);padding-bottom:6px;min-width:0;overflow-wrap:anywhere}
+section{padding-block:36px}
+.sec-head{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.sec-head p{color:var(--muted);max-width:36em}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px}
+.chip{flex:none;font:500 .76rem var(--body);letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:10px 16px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card.featured{border:1px solid var(--accent);grid-column:1/-1}
+.pic{position:relative;overflow:hidden;aspect-ratio:1/1;background:radial-gradient(circle at 30% 15%,#6b3f86,#1a1026 72%);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 0 2px}
+.pic::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.1) 50%,transparent 62%);pointer-events:none}
+.pic svg{height:100%;width:auto;max-width:100%}
+.pic .g{fill:url(#gGold)}.pic .b{fill:url(#gRose)}.pic .w{fill:url(#gIvory)}.pic .d{fill:#0a0f1f}.pic .sh{fill:rgba(0,0,0,.4)}
+.pic .g,.pic .b,.pic .w{stroke:rgba(255,255,255,.45);stroke-width:.6}
+.pic .l{fill:none;stroke:#2a1636;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.pic .gs{fill:none;stroke:url(#gGold);stroke-width:6}
+.pic .bs{fill:none;stroke:url(#gRose);stroke-width:6;stroke-linecap:round}
+.pic .sp{fill:#fff;opacity:.85}
+.pdfb{position:absolute;top:10px;left:10px;z-index:1;font-size:.66rem;font-weight:600;letter-spacing:.12em;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.25);color:#fff;padding:3px 9px;border-radius:999px}
+.card h3{font-size:1.05rem;line-height:1.2}
+.card .price{font-size:1.3rem}
+.card.featured .pic{aspect-ratio:16/9}
+.card .tag{align-self:flex-start;background:var(--tag);color:var(--accent2);font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:3px}
+.card p{color:var(--muted);font-size:.85rem}
+.card .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:6px}
+.price{font-family:var(--display);font-weight:800;font-size:1.5rem;font-variant-numeric:tabular-nums}
+.card .btn{padding:10px 16px;min-height:42px}
+.btn.added{background:var(--tag);color:var(--accent2);box-shadow:inset 0 0 0 1.5px var(--accent2)}
+.incl{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));padding:0;margin:0;list-style:none}
+.incl li{background:var(--surface);border:1px solid var(--line);border-top:2px solid var(--accent2);padding:16px;border-radius:18px}
+.incl b{display:block;margin-bottom:2px}
+.incl span{color:var(--muted);font-size:.95rem}
+details{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600}
+details p{color:var(--muted);margin-top:8px}
+.ph{background:var(--tag);color:var(--accent);padding:0 5px;border-radius:4px;font-weight:600}
+.legal{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-block:22px 10px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:5}
+.bar-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bar .tot{font-variant-numeric:tabular-nums}
+.bar .tot b{font-family:var(--display);font-size:1.2rem}
+.panel{position:fixed;left:0;right:0;bottom:0;max-height:80%;overflow:auto;background:var(--surface);border-top:2px solid var(--accent);z-index:6;
+  padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.panel-in{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.line{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:10px}
+.line button{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font:inherit;font-size:.85rem;padding:6px 0}
+.note{font-size:.9rem;color:var(--warn)}
+@media (min-width:760px){.grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}.hero{grid-template-columns:1.25fr 1fr;align-items:center}.card.featured{grid-column:span 2}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe9a8"/><stop offset=".5" stop-color="#f0b95b"/><stop offset="1" stop-color="#b9822c"/></linearGradient><linearGradient id="gRose" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd0df"/><stop offset=".5" stop-color="#ff9ab8"/><stop offset="1" stop-color="#c9507f"/></linearGradient><linearGradient id="gIvory" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9cdea"/></linearGradient><radialGradient id="gGlow"><stop offset="0" stop-color="#ff9ab8" stop-opacity=".5"/><stop offset=".6" stop-color="#8b5cf6" stop-opacity=".22"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></radialGradient></defs></svg>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Proveedor<span>Express</span></div>
+    <nav class="nav" aria-label="Principal"><a href="#catalogo">Catálogo</a><a href="#incluye">Qué incluye</a><a href="#preguntas">Preguntas</a><a href="#legal">Legal</a></nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>Contactos de fábrica para <span class="hl">vender</span> por tu cuenta</h1>
+      <p class="lead">Elige la categoría que quieres vender y recibe un PDF con proveedores ya localizados, pedidos mínimos orientativos y mensajes listos para contactarlos.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#catalogo">Ver catálogo</a>
+        <a class="btn ghost" href="#incluye">Qué recibes</a>
+      </div>
+    </div>
+    <div class="ficha" aria-label="Ejemplo de ficha de proveedor">
+      <div class="eyebrow"><span>Ficha de proveedor</span><span>Ejemplo</span></div>
+      <dl>
+        <dt>Proveedor</dt><dd>Nombre de la empresa</dd>
+        <dt>País</dt><dd>Donde produce</dd>
+        <dt>Contacto</dt><dd>Web, email o chat</dd>
+        <dt>Mínimo</dt><dd>Pedido mínimo orientativo</dd>
+        <dt>Notas</dt><dd>Plazos y cómo confirmar precios</dd>
+      </dl>
+    </div>
+  </div>
+
+  <section id="catalogo" aria-labelledby="t-cat">
+    <div class="sec-head">
+      <h2 id="t-cat">Elige tu categoría</h2>
+      <p>Pago único. Sin suscripciones. Cada PDF se entrega por email tras el pago.</p>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Filtrar categorías"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="incluye" aria-labelledby="t-inc">
+    <div class="sec-head"><h2 id="t-inc">Qué incluye cada PDF</h2></div>
+    <ul class="incl">
+      <li><b>Lista de proveedores</b><span>Fábricas, mayoristas y directorios de la categoría.</span></li>
+      <li><b>Datos de cada uno</b><span>País, forma de contacto, mínimo habitual y notas.</span></li>
+      <li><b>Mensajes de contacto</b><span>Plantillas en español e inglés para escribirles.</span></li>
+      <li><b>Guía de envíos</b><span>Resumen de aduanas y envíos para empezar a vender.</span></li>
+    </ul>
+  </section>
+
+  <section id="preguntas" aria-labelledby="t-faq">
+    <div class="sec-head"><h2 id="t-faq">Preguntas frecuentes</h2></div>
+    <details><summary>¿Cómo recibo el PDF?</summary><p>Al terminar el pago te llega un email con el enlace de descarga.</p></details>
+    <details><summary>¿Los precios de los proveedores son fijos?</summary><p>No. Los precios y mínimos son orientativos y pueden cambiar. Cada PDF explica cómo confirmarlos con el proveedor antes de comprar.</p></details>
+    <details><summary>¿Vendéis los productos?</summary><p>No. Vendemos el PDF con los contactos. Los pedidos, pagos y envíos los acuerdas tú directamente con cada proveedor.</p></details>
+    <details><summary>¿Puedo pedir un reembolso?</summary><p>Si el archivo no se abre, está dañado o no es lo que se describe, escríbenos y lo solucionamos o te devolvemos el dinero. Mira el apartado "Reembolsos y descarga" más abajo.</p></details>
+  </section>
+
+  <section id="legal" aria-labelledby="t-legal">
+    <div class="sec-head"><h2 id="t-legal">Información legal y contacto</h2>
+      <p>Escríbenos a <span class="ph">[TU EMAIL]</span> para cualquier duda o para pedir ayuda con tu descarga.</p></div>
+    <details><summary>Aviso legal</summary>
+      <p>Contacto: <span class="ph">[TU EMAIL]</span>. Proveedor Express vende documentos digitales en PDF con listas de contactos de proveedores de terceros. No participamos en las operaciones entre el cliente y esos proveedores ni garantizamos sus productos, precios o resultados.</p></details>
+    <details><summary>Política de privacidad</summary>
+      <p>Usamos tu email y los datos de tu compra solo para entregarte el PDF, atender tu pedido y cumplir las obligaciones fiscales. El pago lo procesa Stripe y no vemos los datos de tu tarjeta. No vendemos tus datos. Puedes pedir acceso, corrección o borrado escribiendo a <span class="ph">[TU EMAIL]</span>.</p></details>
+    <details><summary>Cookies</summary>
+      <p>Esta página guarda en tu navegador solo tu carrito, para que no se pierda al recargar. No usa cookies de publicidad ni de seguimiento.</p></details>
+    <details><summary>Reembolsos y descarga</summary>
+      <p>Los PDF son contenido digital de descarga inmediata. Al iniciar la descarga, con tu consentimiento previo, pierdes el derecho de desistimiento de 14 días. Si el archivo no se abre, está dañado o no es lo que se describe, escríbenos a <span class="ph">[TU EMAIL]</span> y lo solucionamos o te devolvemos el dinero.</p></details>
+    <p class="legal">Producto digital en PDF. Los contactos son de terceros y los precios y mínimos de cada proveedor son orientativos. Precios con IVA incluido.</p>
+  </section>
+</div>
+
+<div class="bar" id="bar" hidden>
+  <div class="bar-in">
+    <div class="tot"><span id="count"></span> · <b id="total"></b></div>
+    <button class="btn primary" id="open" type="button">Ver carrito</button>
+  </div>
+</div>
+
+<div class="panel" id="panel" hidden role="dialog" aria-label="Tu carrito">
+  <div class="panel-in">
+    <h3>Tu carrito</h3>
+    <div id="lines"></div>
+    <div class="line" style="border:0"><span>Total (IVA incluido)</span><b class="price" id="total2"></b></div>
+    <a class="btn primary" id="pay" href="#" target="_blank" rel="noopener">Pagar</a>
+    <p class="note" id="paynote" hidden>El pago aún no está conectado. Falta añadir tu enlace de pago.</p>
+    <button class="btn ghost" id="close" type="button">Seguir mirando</button>
+  </div>
+</div>
+
+<script>
+/* ---- Ajusta aquí tu tienda ---- */
+var PAYMENT_LINK = ""; /* enlace de pago (Stripe, PayPal...) */
+var PRODUCTS = [
+  {id:"todo", name:"Acceso a todas las categorías", desc:"Todos los PDF del catálogo en un solo pago.", price:29.99, cat:"Pack", featured:true},
+  {id:"joyeria", name:"Proveedores de joyería", desc:"Pulseras, collares, anillos y pendientes.", price:9.99, cat:"Moda"},
+  {id:"relojes", name:"Proveedores de relojes", desc:"Relojes de moda y accesorios.", price:9.99, cat:"Moda"},
+  {id:"zapatillas", name:"Proveedores de zapatillas", desc:"Calzado deportivo y urbano.", price:9.99, cat:"Moda"},
+  {id:"deporte", name:"Proveedores de ropa deportiva", desc:"Ropa para entrenar y para el día a día.", price:9.99, cat:"Moda"},
+  {id:"perfumes", name:"Proveedores de perfumes", desc:"Fragancias y sets de regalo.", price:9.99, cat:"Belleza"},
+  {id:"secadores", name:"Proveedores de secadores", desc:"Cuidado del cabello y pequeño aparato.", price:9.99, cat:"Belleza"},
+  {id:"electronica", name:"Proveedores de electrónica", desc:"Auriculares, cargadores y accesorios.", price:9.99, cat:"Tecnología"},
+  {id:"gaming", name:"Proveedores gaming", desc:"Mandos, accesorios y periféricos.", price:9.99, cat:"Tecnología"},
+  {id:"juguetes", name:"Proveedores de juguetes", desc:"Juguetes y peluches.", price:9.99, cat:"Hogar y niños"},
+  {id:"termos", name:"Proveedores de termos", desc:"Botellas y termos para llevar.", price:9.99, cat:"Hogar y niños"}
+];
+/* ------------------------------- */
+var ICONS = {
+  todo:'<rect class="b" x="20" y="14" width="40" height="50" rx="4" transform="rotate(-8 40 39)"/><rect class="w" x="30" y="8" width="42" height="54" rx="4"/><rect class="g" x="37" y="16" width="22" height="6" rx="2"/><rect class="b" x="37" y="28" width="28" height="3" rx="1.5"/><rect class="b" x="37" y="36" width="28" height="3" rx="1.5"/><rect class="b" x="37" y="44" width="18" height="3" rx="1.5"/><rect class="g" x="54" y="48" width="24" height="12" rx="3"/>',
+  joyeria:'<circle class="gs" cx="50" cy="45" r="16"/><path class="b" d="M39 22L44 13H56L61 22L50 33Z"/><path class="w" d="M44 13L50 22L56 13Z" opacity=".55"/><path class="l" d="M39 22H61M50 22V33"/>',
+  relojes:'<rect class="g" x="40" y="3" width="20" height="16" rx="3"/><rect class="g" x="40" y="51" width="20" height="16" rx="3"/><circle class="g" cx="50" cy="35" r="22"/><circle class="w" cx="50" cy="35" r="17"/><path class="l" d="M50 24V35L58 40"/><circle class="b" cx="50" cy="35" r="2.5"/>',
+  zapatillas:'<path class="b" d="M10 52V42C10 38 14 36 18 36L26 34L34 26L42 34C52 36 64 40 74 44C86 46 92 48 92 52Z"/><path class="w" d="M8 52H92V58C92 61 90 63 87 63H13C10 63 8 61 8 58Z"/><path class="g" d="M32 40L46 47L42 51L28 44Z"/><path class="l" d="M30 31L36 36M36 26L42 32"/>',
+  deporte:'<path class="b" d="M32 8L12 20L20 34L30 29V62H70V29L80 34L88 20L68 8C64 16 36 16 32 8Z"/><path class="g" d="M38 8C42 17 58 17 62 8C60 12 40 12 38 8Z"/><rect class="g" x="30" y="44" width="40" height="5"/>',
+  perfumes:'<rect class="w" x="38" y="5" width="24" height="12" rx="3"/><rect class="g" x="43" y="17" width="14" height="10"/><rect class="b" x="27" y="27" width="46" height="37" rx="7"/><rect class="w" x="33" y="33" width="7" height="25" rx="3.5" opacity=".45"/><rect class="g" x="46" y="40" width="21" height="14" rx="3"/>',
+  secadores:'<path class="g" d="M10 26C10 14 40 11 64 16V38C40 43 10 40 10 26Z"/><rect class="b" x="64" y="17" width="16" height="20" rx="3"/><path class="b" d="M30 39L26 64H44L48 40Z"/><path class="w" d="M20 22C28 19 38 18 46 18" opacity=".5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>',
+  electronica:'<path class="bs" d="M20 44V36A30 30 0 0 1 80 36V44"/><rect class="g" x="11" y="40" width="18" height="25" rx="6"/><rect class="g" x="71" y="40" width="18" height="25" rx="6"/><rect class="w" x="15" y="46" width="5" height="13" rx="2.5" opacity=".6"/><rect class="w" x="80" y="46" width="5" height="13" rx="2.5" opacity=".6"/>',
+  gaming:'<path class="b" d="M22 16H78C90 16 94 50 83 56C76 59 72 50 66 46H34C28 50 24 59 17 56C6 50 10 16 22 16Z"/><rect class="w" x="28" y="30" width="16" height="5" rx="1.5"/><rect class="w" x="33.5" y="24.5" width="5" height="16" rx="1.5"/><circle class="g" cx="68" cy="27" r="4.5"/><circle class="w" cx="76" cy="34" r="4.5"/>',
+  juguetes:'<rect class="w" x="33" y="7" width="34" height="27" rx="3"/><rect class="g" x="11" y="36" width="37" height="27" rx="3"/><rect class="b" x="52" y="36" width="37" height="27" rx="3"/><circle class="d" cx="42" cy="15" r="3" opacity=".25"/><circle class="d" cx="58" cy="15" r="3" opacity=".25"/>',
+  termos:'<rect class="w" x="40" y="5" width="20" height="11" rx="3"/><rect class="b" x="35" y="16" width="30" height="49" rx="8"/><rect class="g" x="35" y="31" width="30" height="9"/><rect class="w" x="40" y="44" width="5" height="16" rx="2.5" opacity=".4"/>'
+};
+var STAR='M0-5L1.3-1.3L5 0L1.3 1.3L0 5L-1.3 1.3L-5 0L-1.3-1.3Z';
+function icon(id){return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+'<circle cx="50" cy="48" r="42" fill="url(#gGlow)"/>'+'<circle cx="50" cy="48" r="35" fill="none" stroke="rgba(255,255,255,.14)" stroke-width=".8"/>'+'<circle cx="50" cy="48" r="45" fill="none" stroke="rgba(255,255,255,.08)" stroke-width=".8"/>'+'<path class="sp" transform="translate(16 22) scale(1.3)" d="'+STAR+'"/>'+'<path class="sp" transform="translate(84 30) scale(.9)" d="'+STAR+'"/>'+'<path class="sp" transform="translate(80 78) scale(1.1)" d="'+STAR+'"/>'+'<path class="sp" transform="translate(20 74) scale(.7)" d="'+STAR+'"/>'+'<ellipse cx="50" cy="86" rx="36" ry="6" fill="rgba(255,255,255,.08)"/>'+'<g transform="translate(-2.5 9) scale(1.05)"><ellipse class="sh" cx="50" cy="68" rx="32" ry="2.5"/>'+(ICONS[id]||ICONS.todo)+'</g></svg>'}
+var cart = [];
+try{ cart = JSON.parse(localStorage.getItem("df-cart")||"[]") }catch(e){}
+var cats = ["Todo"].concat(PRODUCTS.map(function(p){return p.cat}).filter(function(c,i,a){return a.indexOf(c)===i}));
+var current = "Todo";
+function eur(n){return n.toFixed(2).replace(".",",")+" €"}
+function $(id){return document.getElementById(id)}
+function save(){try{localStorage.setItem("df-cart",JSON.stringify(cart))}catch(e){}}
+function renderChips(){
+  $("chips").innerHTML = cats.map(function(c){
+    return '<button type="button" class="chip" data-c="'+c+'" aria-pressed="'+(c===current)+'">'+c+'</button>'}).join("");
+}
+function renderGrid(){
+  $("grid").innerHTML = PRODUCTS.filter(function(p){return current==="Todo"||p.cat===current||p.featured}).map(function(p){
+    var inCart = cart.indexOf(p.id)>-1;
+    return '<article class="card'+(p.featured?' featured':'')+'"><div class="pic"><span class="pdfb">PDF</span><span aria-hidden="true" style="display:contents">'+icon(p.id)+'</span></div><span class="tag">'+(p.featured?'Todo incluido':p.cat)+'</span>'+
+      '<h3>'+p.name+'</h3><p>'+p.desc+'</p>'+
+      '<div class="foot"><span class="price">'+eur(p.price)+'</span>'+
+      '<button type="button" class="btn '+(inCart?'added':'primary')+'" data-id="'+p.id+'">'+(inCart?'En el carrito':'Añadir')+'</button></div></article>'}).join("");
+}
+function renderCart(){
+  var items = cart.map(function(id){return PRODUCTS.filter(function(p){return p.id===id})[0]}).filter(Boolean);
+  var total = items.reduce(function(s,p){return s+p.price},0);
+  $("bar").hidden = items.length===0;
+  $("count").textContent = items.length+(items.length===1?" producto":" productos");
+  $("total").textContent = eur(total); $("total2").textContent = eur(total);
+  $("lines").innerHTML = items.map(function(p){
+    return '<div class="line"><span>'+p.name+'</span><span>'+eur(p.price)+' <button type="button" data-rm="'+p.id+'">Quitar</button></span></div>'}).join("");
+  if(!items.length) $("panel").hidden = true;
+  var pay = $("pay");
+  if(PAYMENT_LINK){pay.href = PAYMENT_LINK; $("paynote").hidden = true}
+  else{pay.removeAttribute("href"); $("paynote").hidden = false}
+}
+function refresh(){save();renderGrid();renderCart()}
+$("chips").addEventListener("click",function(e){var c=e.target.getAttribute("data-c");if(c){current=c;renderChips();renderGrid()}});
+$("grid").addEventListener("click",function(e){
+  var id=e.target.getAttribute("data-id"); if(!id) return;
+  var i=cart.indexOf(id); if(i>-1) cart.splice(i,1); else cart.push(id); refresh();
+});
+$("lines").addEventListener("click",function(e){var id=e.target.getAttribute("data-rm");if(id){cart.splice(cart.indexOf(id),1);refresh()}});
+$("open").addEventListener("click",function(){$("panel").hidden=false});
+$("close").addEventListener("click",function(){$("panel").hidden=true});
+$("pay").addEventListener("click",function(e){if(!PAYMENT_LINK)e.preventDefault()});
+renderChips();renderGrid();renderCart();
+</script>
+
+</body>
+</html>
+
+</body></html>
