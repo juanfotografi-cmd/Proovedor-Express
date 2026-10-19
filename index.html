@@ -202,6 +202,8 @@ var PRODUCTS = [
   {id:"juguetes", name:"Proveedores de juguetes", desc:"Juguetes y peluches.", price:9.99, cat:"Hogar y niños"},
   {id:"termos", name:"Proveedores de termos", desc:"Botellas y termos para llevar.", price:9.99, cat:"Hogar y niños"}
 ];
+var CAT_LINK = "https://buy.stripe.com/aFa9AU9ScaXc7JK1tf9EI01"; /* enlace de las categorias individuales */
+PRODUCTS.forEach(function(p){ if(!p.link) p.link = CAT_LINK; });
 /* ------------------------------- */
 var ICONS = {
   todo:'<rect class="b" x="20" y="14" width="40" height="50" rx="4" transform="rotate(-8 40 39)"/><rect class="w" x="30" y="8" width="42" height="54" rx="4"/><rect class="g" x="37" y="16" width="22" height="6" rx="2"/><rect class="b" x="37" y="28" width="28" height="3" rx="1.5"/><rect class="b" x="37" y="36" width="28" height="3" rx="1.5"/><rect class="b" x="37" y="44" width="18" height="3" rx="1.5"/><rect class="g" x="54" y="48" width="24" height="12" rx="3"/>',
